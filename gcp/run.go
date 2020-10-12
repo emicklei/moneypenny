@@ -6,10 +6,13 @@ import (
 
 	"cloud.google.com/go/bigquery"
 	"github.com/emicklei/moneypenny/model"
+	"github.com/emicklei/moneypenny/util"
 	"google.golang.org/api/iterator"
 )
 
 func RunBigQuery(ctx context.Context, p model.Params, query string) (model.CostComputation, error) {
+	util.CheckGCPCredentials()
+
 	cc := model.CostComputation{Lines: []map[string]bigquery.Value{}}
 	client, err := bigquery.NewClient(ctx, p.BillingProjectID()) // assume execution project == billing record project
 	cc.Query = query

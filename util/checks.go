@@ -2,6 +2,7 @@ package util
 
 import (
 	"log"
+	"os"
 	"strings"
 )
 
@@ -21,4 +22,21 @@ func CheckBigQueryTable(id string) {
 	if p := strings.Split(id, "."); len(p) != 3 {
 		log.Fatalln("full qualified bigquery table must be PROJECT.DATASET.TABLE, got:", id)
 	}
+}
+
+var checkedGCP = false
+
+func CheckGCPCredentials() {
+	if checkedGCP {
+		return
+	}
+	fileRef := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+	if len(fileRef) == 0 {
+		log.Fatalln("no value for environment variable GOOGLE_APPLICATION_CREDENTIALS")
+	}
+	_, err := os.Stat(fileRef)
+	if os.IsNotExist(err) {
+		log.Fatalln("file referenced by GOOGLE_APPLICATION_CREDENTIALS does not exist", err)
+	}
+	checkedGCP = true
 }

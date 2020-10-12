@@ -7,6 +7,7 @@ import (
 
 	stackmoni "cloud.google.com/go/monitoring/apiv3"
 	"github.com/emicklei/moneypenny/model"
+	"github.com/emicklei/moneypenny/util"
 	googlepb "github.com/golang/protobuf/ptypes/timestamp"
 	metricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
@@ -22,6 +23,8 @@ type StackDriver struct {
 
 // NewStackDriver create a connected StackDriver for a given project for which metrics are created.
 func NewStackDriver(projectID string) (*StackDriver, error) {
+	util.CheckGCPCredentials()
+
 	ctx := context.Background()
 	metricsClient, err := stackmoni.NewMetricClient(ctx)
 	if err != nil {

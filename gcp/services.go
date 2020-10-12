@@ -5,11 +5,14 @@ import (
 	"log"
 	"strings"
 
+	"github.com/emicklei/moneypenny/util"
 	"google.golang.org/api/serviceusage/v1"
 )
 
 // IsBigQueryEnabled returns wheter a GCP project has bigquery.googleapis.com enabled.
 func IsBigQueryEnabled(ctx context.Context, project string) bool {
+	util.CheckGCPCredentials()
+
 	serviceusageService, err := serviceusage.NewService(ctx)
 	call := serviceusageService.Services.List("projects/" + project).Filter("state:ENABLED")
 	resp, err := call.Do()
