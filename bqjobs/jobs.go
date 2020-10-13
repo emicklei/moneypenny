@@ -74,7 +74,7 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 				log.Printf("ERROR: inserting batch of %d rows, batch error:%v\n", len(subset), err)
 				return
 			}
-			log.Println("completed batched inserts of rows:", insertCount)
+			log.Println("completed insert of batch of rows:", len(subset))
 		}
 		return
 	}

@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	cloud.google.com/go v0.68.0
-	cloud.google.com/go/bigquery v1.11.2
+	cloud.google.com/go/bigquery v1.12.0
 	github.com/emicklei/tre v1.2.0
 	github.com/golang/protobuf v1.4.2
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
