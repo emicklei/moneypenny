@@ -1,15 +1,16 @@
 package util
 
 import (
+	"io/ioutil"
 	"os"
-	"path/filepath"
 	"testing"
 	"time"
 )
 
 func TestExportJSON(t *testing.T) {
-	f := filepath.Join(os.TempDir(), "TestExportJSON.json")
-	err := ExportJSON(time.Now(), f)
+	f, _ := ioutil.TempFile(os.TempDir(), "TestExportJSON")
+	t.Log(f.Name())
+	err := ExportJSON(time.Now(), f.Name())
 	if err != nil {
 		t.Error(err)
 	}

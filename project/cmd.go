@@ -7,6 +7,7 @@ import (
 
 	"github.com/emicklei/moneypenny/gcp"
 	"github.com/emicklei/moneypenny/model"
+	"github.com/emicklei/moneypenny/util"
 	"github.com/urfave/cli/v2"
 	"gonum.org/v1/gonum/stat"
 )
