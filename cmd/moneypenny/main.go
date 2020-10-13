@@ -96,6 +96,10 @@ func newApp() *cli.App {
 					Name:  "bigquery-jobs-table",
 					Usage: "project.dataset.table, full qualified identifier",
 				},
+				&cli.StringFlag{
+					Name:  "project-id",
+					Usage: "if empty then update for all visible projects",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				p := model.ParamsFromContext(c)

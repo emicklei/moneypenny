@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"log"
 	"strings"
 	"time"
@@ -27,8 +28,8 @@ type Params struct {
 	TargetDatasetRegion    string `json:"target-region,omitempty" `
 	TargetMetricsProjectID string `json:"metrics-project-id,omitempty" `
 
-	DryRun  bool `json:"-" `
-	Verbose bool `json:"-" `
+	DryRun  bool `json:"dryrun" `
+	Verbose bool `json:"v" `
 }
 
 func ParamsFromContext(c *cli.Context) Params {
@@ -55,6 +56,11 @@ func ParamsFromContext(c *cli.Context) Params {
 		p.Year = d.Year()
 	}
 	return p
+}
+
+func (p Params) JSON() string {
+	data, _ := json.MarshalIndent(p, "", "\t")
+	return string(data)
 }
 
 func (p Params) TargetProjectID() string {

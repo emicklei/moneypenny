@@ -13,7 +13,7 @@ import (
 )
 
 func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
-	log.Println("DetectProjectCostAnomalies", p)
+	log.Println("DetectProjectCostAnomalies", p.JSON())
 	dayTo := p.Date().Add(-24 * time.Hour)
 	// 30 days back
 	dayFrom := dayTo.Add(-30 * time.Hour * 24)

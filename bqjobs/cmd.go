@@ -28,6 +28,15 @@ func CollectJobHistory(c *cli.Context, p model.Params) error {
 	}
 	defer client.Close()
 	inserter := client.Dataset(tableDataset).Table(tableName).Inserter()
+
+	// single project?
+	if projectID := c.String("project-id"); len(projectID) > 0 {
+		if gcp.IsBigQueryEnabled(ctx, projectID) {
+			queryAndAppend(ctx, client, projectID, inserter, p.DryRun)
+		}
+		return nil
+	}
+	// all projects
 	for _, each := range gcp.AllProjects(ctx) {
 		if gcp.IsBigQueryEnabled(ctx, each) {
 			queryAndAppend(ctx, client, each, inserter, p.DryRun)
