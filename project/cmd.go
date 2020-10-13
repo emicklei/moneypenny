@@ -12,6 +12,7 @@ import (
 )
 
 func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
+	log.Println("DetectProjectCostAnomalies", p)
 	dayTo := p.Date().Add(-24 * time.Hour)
 	// 30 days back
 	dayFrom := dayTo.Add(-30 * time.Hour * 24)
@@ -22,7 +23,7 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 	if err != nil {
 		return err
 	}
-	log.Println("daily costs:", len(cost.Lines))
+	log.Println("daily cost entries:", len(cost.Lines))
 	statsMap := map[string]*ProjectStats{}
 	for _, each := range cost.Lines {
 		dc := DailyCostFrom(each)
@@ -50,11 +51,14 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 
 	log.Println("detecting anomalies...")
 	detector := BestSundaySky
+	anomalies := []*ProjectStats{}
 	for id, each := range statsMap {
 		if detector.IsAnomaly(each) {
+			anomalies = append(anomalies, each)
 			log.Println("id:", id, "cost:", each.Daily[0].Charges, "avg:", each.Mean, "stddev:", each.StandardDeviation, "day:", each.Daily[0].Day.String())
 		}
 	}
+	util.ExportJSON(anomalies, "DetectProjectCostAnomalies.json")
 	log.Println("done")
 	return nil
 }

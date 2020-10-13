@@ -7,11 +7,11 @@ import (
 )
 
 type DailyCost struct {
-	Day         time.Time `biguery:"consumption_day"`
-	ProjectName string    `bigquery:"name" `
-	ProjectID   string    `bigquery:"id"  `
+	Day         time.Time `biguery:"consumption_day" json:"consumption-day" `
+	ProjectName string    `bigquery:"name" json:"project-name" `
+	ProjectID   string    `bigquery:"id" json:"project-id" `
 	Charges     float64   `bigquery:"charges" json:"charges"`
-	Credits     float64   `bigquery:"credits" json:"cost"`
+	Credits     float64   `bigquery:"credits" json:"credits"`
 }
 
 func DailyCostFrom(m map[string]bigquery.Value) DailyCost {
@@ -25,7 +25,7 @@ func DailyCostFrom(m map[string]bigquery.Value) DailyCost {
 }
 
 type ProjectStats struct {
-	Daily             []DailyCost
-	Mean              float64
-	StandardDeviation float64
+	Daily             []DailyCost `json:"daily" `
+	Mean              float64     `json:"mean" `
+	StandardDeviation float64     `json:"stddev" `
 }
