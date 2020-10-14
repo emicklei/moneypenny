@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/emicklei/moneypenny/alert"
 	"github.com/emicklei/moneypenny/bqjobs"
 	"github.com/emicklei/moneypenny/model"
 	"github.com/emicklei/moneypenny/opex"
@@ -118,6 +119,45 @@ func newApp() *cli.App {
 			Action: func(c *cli.Context) error {
 				p := model.ParamsFromContext(c)
 				return opex.MeasureCostPerOpexLastDay(c, p)
+			},
+		},
+		{
+			Name:  "send-email",
+			Usage: "Send a HTML email by processing a Go template with a JSON document",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "api-key",
+					Usage: "sendgrid.io API Key",
+				},
+				&cli.StringFlag{
+					Name:  "from",
+					Usage: "from email address",
+				},
+				&cli.StringFlag{
+					Name:  "to",
+					Usage: "to email address",
+				},
+				&cli.StringFlag{
+					Name:  "subject",
+					Usage: "email subject",
+				},
+				&cli.StringFlag{
+					Name:  "html-template-file",
+					Usage: "file with Go template to produce HTML",
+				},
+				&cli.StringFlag{
+					Name:  "json-file",
+					Usage: "file with JSON document to process with template",
+				},
+			},
+			Action: func(c *cli.Context) error {
+
+				return alert.SendEmail(c.String("subject"),
+					c.String("from"),
+					c.String("to"),
+					c.String("json-file"),
+					c.String("html-template-file"),
+					c.String("api-key"))
 			},
 		},
 	}

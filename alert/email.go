@@ -1,0 +1,60 @@
+package alert
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"io/ioutil"
+	"net/http"
+	"text/template"
+
+	"github.com/emicklei/moneypenny/util"
+	"github.com/emicklei/tre"
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
+)
+
+func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplateFilename, apikey string) error {
+	util.CheckNonEmpty("from email", fromAddress)
+	util.CheckNonEmpty("to email", toAddress)
+	util.CheckNonEmpty("subject email", subject)
+	util.CheckNonEmpty("apikey", apikey)
+
+	from := mail.NewEmail("Moneypenny notifier", fromAddress)
+	to := mail.NewEmail("Moneypenny follower", toAddress)
+
+	dataJSON, err := ioutil.ReadFile(jsonFilename)
+	if err != nil {
+		return tre.New(err, "reading JSON")
+	}
+	data := map[string]interface{}{}
+	err = json.Unmarshal(dataJSON, &data)
+	if err != nil {
+		return tre.New(err, "parsing JSON")
+	}
+	// fallback for non-html will have the JSON formatted data
+	plainTextContent := string(dataJSON)
+
+	// use template + data to get html content
+	buf := new(bytes.Buffer)
+	templateData, err := ioutil.ReadFile(htmlTemplateFilename)
+	if err != nil {
+		return tre.New(err, "reading template", "file", "htmlTemplateFilename")
+	}
+	t, err := template.New("SendEmail").Parse(string(templateData))
+	if err != nil {
+		return tre.New(err, "parsing template", "file", "htmlTemplateFilename")
+	}
+	err = t.ExecuteTemplate(buf, "SendEmail", data)
+	if err != nil {
+		return tre.New(err, "executing template", "file", "htmlTemplateFilename")
+	}
+	htmlContent := buf.String()
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+	client := sendgrid.NewSendClient(apikey)
+	resp, err := client.Send(message)
+	if resp.StatusCode > http.StatusAccepted {
+		return tre.New(errors.New("failed to send email"), "sendgrid failed to deliver", "status", resp.StatusCode, "body", resp.Body)
+	}
+	return err
+}

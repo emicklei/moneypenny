@@ -50,7 +50,7 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 			insertCount++
 		}
 	}
-	timingOut, cancel := context.WithTimeout(ctx, 60*time.Second)
+	timingOut, cancel := context.WithTimeout(ctx, 60*time.Second) // TODO add flag for this
 	defer cancel()
 	if dryrun {
 		log.Println("skip inserting jobs because dryrun, count:", jobCount)
@@ -60,7 +60,7 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 
 	if err := inserter.Put(timingOut, jobsToInsert); err != nil {
 		log.Printf("WARNING: inserting %d rows, error:%v\n", insertCount, err)
-		batch := 100
+		batch := 100 // TODO add flag for this
 		log.Println("try batching the rows but give up on the first error, batch size:", batch)
 		for i := 0; i < len(jobsToInsert); i += batch {
 			end := i + batch
@@ -68,7 +68,7 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 				end = len(jobsToInsert)
 			}
 			subset := jobsToInsert[i:end]
-			subTimeout, cancel := context.WithTimeout(ctx, 10*time.Second)
+			subTimeout, cancel := context.WithTimeout(ctx, 10*time.Second) // TODO add flag for this
 			defer cancel()
 			if err := inserter.Put(subTimeout, subset); err != nil {
 				log.Printf("ERROR: inserting batch of %d rows, batch error:%v\n", len(subset), err)

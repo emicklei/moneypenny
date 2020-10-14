@@ -24,6 +24,12 @@ func CheckBigQueryTable(id string) {
 	}
 }
 
+func CheckNonEmpty(parameter, value string) {
+	if len(value) == 0 {
+		log.Fatalf("parameter [%s] cannot be empty", parameter)
+	}
+}
+
 var checkedGCP = false
 
 func CheckGCPCredentials() {
