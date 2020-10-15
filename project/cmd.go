@@ -16,7 +16,7 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 	log.Println("DetectProjectCostAnomalies", p.JSON())
 	// date is a YYYYMMDD with zero time
 	// dayTo must be yesterday
-	dayTo := p.Date().Add(1 * time.Second)
+	dayTo := p.Date().Add(-1 * time.Second)
 	// 30 days back
 	dayFrom := dayTo.Add(-30 * time.Hour * 24) // TODO make flag for 30
 

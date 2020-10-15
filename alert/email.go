@@ -18,7 +18,7 @@ func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplat
 	util.CheckNonEmpty("from email", fromAddress)
 	util.CheckNonEmpty("to email", toAddress)
 	util.CheckNonEmpty("subject email", subject)
-	util.CheckNonEmpty("apikey", apikey)
+	util.CheckNonEmpty("api-key", apikey)
 
 	from := mail.NewEmail("Moneypenny notifier", fromAddress)
 	to := mail.NewEmail("Moneypenny follower", toAddress)
