@@ -1,5 +1,7 @@
 package project
 
+import "fmt"
+
 // https://github.com/SundaySky/cost-anomaly-detector
 type SundaySky struct {
 	relativeThreshold float64
@@ -8,6 +10,10 @@ type SundaySky struct {
 }
 
 var BestSundaySky = SundaySky{1.25, 2.0, 10} // article uses 3.5 for stddev
+
+func (s SundaySky) String() string {
+	return fmt.Sprintf("sundaysky{relativeThreshold=%.2f,stddevThreshold=%.2f,absoluteThreshold=%.2f}", s.relativeThreshold, s.stddevThreshold, s.absoluteThreshold)
+}
 
 func (s SundaySky) IsAnomaly(stats *ProjectStats) bool {
 	if len(stats.Daily) < 1 {

@@ -18,7 +18,7 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 	// dayTo must be yesterday
 	dayTo := p.Date().Add(1 * time.Second)
 	// 30 days back
-	dayFrom := dayTo.Add(-30 * time.Hour * 24)
+	dayFrom := dayTo.Add(-30 * time.Hour * 24) // TODO make flag for 30
 
 	q := QueryPastDays(p.BillingTableFQN, dayFrom, dayTo)
 
@@ -52,12 +52,18 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 		each.StandardDeviation = stddev
 	}
 
-	log.Println("detecting anomalies...")
+	log.Println("detecting cost anomalies on", dayTo, "...")
 	detector := BestSundaySky
-	anomalies := []*ProjectStats{}
+	anomalies := []ProjectStatsReport{}
 	for id, each := range statsMap {
 		if detector.IsAnomaly(each) {
-			anomalies = append(anomalies, each)
+			report := ProjectStatsReport{
+				LastDay:           each.Daily[0], // bounds are checked
+				Detector:          detector.String(),
+				Mean:              each.Mean,
+				StandardDeviation: each.StandardDeviation,
+			}
+			anomalies = append(anomalies, report)
 			log.Println("id:", id, "cost:", each.Daily[0].Charges, "avg:", each.Mean, "stddev:", each.StandardDeviation, "day:", each.Daily[0].Day.String())
 		}
 	}
