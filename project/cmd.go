@@ -12,8 +12,8 @@ import (
 	"gonum.org/v1/gonum/stat"
 )
 
-// DetectProjectCostAnomalies collects 30 days of costs per project to detect a cost anomaly.
-// Write a report to [DetectProjectCostAnomalies.json] if at least one anomaly was found.
+// DetectProjectCostAnomalies collects 30 days of costs per project to detect a cost
+// Write a report to [DetectProjectCostAnomalies.json] if at lease one anomaly was found.
 func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 	log.Println("DetectProjectCostAnomalies", p.JSON())
 	// date is a YYYYMMDD with zero time

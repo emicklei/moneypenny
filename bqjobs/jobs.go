@@ -9,6 +9,8 @@ import (
 	"cloud.google.com/go/bigquery"
 )
 
+const bytesProcessedThreshold = 1e+9 // 1 Gb TODO make flag
+
 // Job information is available for a six month period after creation
 // Requires the Can View project role, or the Is Owner project role if you set the allUsers property.
 func queryAndAppend(ctx context.Context, client *bigquery.Client, project string, inserter *bigquery.Inserter, dryrun bool) {
@@ -35,7 +37,7 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 			break
 		}
 		jobCount++
-		if job.LastStatus().Statistics.TotalBytesProcessed > 0 {
+		if job.LastStatus().Statistics.TotalBytesProcessed > bytesProcessedThreshold {
 			bj := BigQueryJob{
 				JobID:               job.ID(),
 				Project:             project,
@@ -56,7 +58,7 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 		log.Println("skip inserting jobs because dryrun, count:", jobCount)
 		return
 	}
-	log.Println("inserting jobs", insertCount, "out of", jobCount)
+	log.Println("inserting jobs", insertCount, "with bytes processed larger than (GB)", bytesProcessedThreshold/1e+9, "out of", jobCount)
 
 	if err := inserter.Put(timingOut, jobsToInsert); err != nil {
 		log.Printf("WARNING: inserting %d rows, error:%v\n", insertCount, err)

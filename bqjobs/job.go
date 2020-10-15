@@ -2,6 +2,7 @@ package bqjobs
 
 import "time"
 
+// BigQueryJob represents a row in $PROJECT:moneypenny_dataset.moneypenny_bigquery_job_history
 type BigQueryJob struct {
 	JobID               string    `bigquery:"job_id"`
 	Project             string    `bigquery:"project"`
