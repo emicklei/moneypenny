@@ -67,7 +67,9 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 			log.Println("id:", id, "cost:", each.Daily[0].Charges, "avg:", each.Mean, "stddev:", each.StandardDeviation, "day:", each.Daily[0].Day.String())
 		}
 	}
-	util.ExportJSON(anomalies, "DetectProjectCostAnomalies.json")
+	root := map[string][]ProjectStatsReport{}
+	root["anomalies"] = anomalies
+	util.ExportJSON(root, "DetectProjectCostAnomalies.json")
 	log.Println("done")
 	return nil
 }

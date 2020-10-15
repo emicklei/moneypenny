@@ -7,9 +7,9 @@ import (
 )
 
 type DailyCost struct {
-	Day         time.Time `biguery:"consumption_day" json:"consumption-day" `
-	ProjectName string    `bigquery:"name" json:"project-name" `
-	ProjectID   string    `bigquery:"id" json:"project-id" `
+	Day         time.Time `biguery:"consumption_day" json:"consumption_day" `
+	ProjectName string    `bigquery:"name" json:"project_name" `
+	ProjectID   string    `bigquery:"id" json:"project_id" `
 	Charges     float64   `bigquery:"charges" json:"charges"`
 	Credits     float64   `bigquery:"credits" json:"credits"`
 }
@@ -31,7 +31,7 @@ type ProjectStats struct {
 }
 
 type ProjectStatsReport struct {
-	LastDay           DailyCost `json:"last-day" `
+	LastDay           DailyCost `json:"last_day" `
 	Mean              float64   `json:"mean" `
 	StandardDeviation float64   `json:"stddev" `
 	Detector          string    `json:"detector" `
