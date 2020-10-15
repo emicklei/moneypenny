@@ -127,7 +127,7 @@ func newApp() *cli.App {
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:  "api-key",
-					Usage: "sendgrid.io API Key",
+					Usage: "sendgrid.com API Key",
 				},
 				&cli.StringFlag{
 					Name:  "from",

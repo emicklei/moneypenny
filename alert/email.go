@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"text/template"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
+// SendEmail sends HTML content to an email address unless the data (jsonFilename) is missing.
 func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplateFilename, apikey string) error {
 	util.CheckNonEmpty("from email", fromAddress)
 	util.CheckNonEmpty("to email", toAddress)
@@ -25,7 +27,8 @@ func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplat
 
 	dataJSON, err := ioutil.ReadFile(jsonFilename)
 	if err != nil {
-		return tre.New(err, "reading JSON")
+		log.Println("Warning: no JSON data file found, skip sending email", jsonFilename)
+		return nil
 	}
 	data := map[string]interface{}{}
 	err = json.Unmarshal(dataJSON, &data)
