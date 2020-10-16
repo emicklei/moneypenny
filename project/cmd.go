@@ -15,7 +15,7 @@ import (
 // DetectProjectCostAnomalies collects 30 days of costs per project to detect a cost
 // Write a report to [DetectProjectCostAnomalies.json] if at lease one anomaly was found.
 func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
-	log.Println("DetectProjectCostAnomalies", p.JSON())
+	log.Println("detect-project-cost-anomalies")
 	// date is a YYYYMMDD with zero time
 	// dayTo must be yesterday
 	dayTo := p.Date().Add(-1 * time.Second)
@@ -75,6 +75,6 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 		root["anomalies"] = anomalies
 		util.ExportJSON(root, "DetectProjectCostAnomalies.json")
 	}
-	log.Println("done")
+	log.Println("detect-project-cost-anomalies done")
 	return nil
 }

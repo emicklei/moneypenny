@@ -1,27 +1,27 @@
 <!-- this is an example template that matches the data structure of the anomaly report -->
 <table>
-    <tr>
-        <th>project</th>
-        <th>id</th>
-        <th>day</th>
+    <th>
+        <td>project</td>                
         <td>charges</td>
         <td>credits</td>
         <td>mean</td>
-        <td>stddev</td>
+        <td>stddev</td>        
+        <td>day</td>
         <td>detector</td>
-    </tr>
+        <td>project id</td>
+    </th>
 
     {{range .anomalies}}
     <tr>
         <td>
         <td>{{ .last_day.project_name }}</td>
-        <td>{{ .last_day.project_id }}</td>
-        <td>{{ .last_day.consumption_day }}</td>
         <td>{{ .last_day.charges }}</td>
         <td>{{ .last_day.credits }}</td>
         <td>{{ .mean }} </td>
-        <td>{{ .stddev }} </td>
+        <td>{{ .stddev }} </td>        
+        <td>{{ .last_day.consumption_day }}</td>
         <td>{{ .detector }} </td>
+        <td>{{ .last_day.project_id }}</td>
     </tr>
     {{ end }}
     

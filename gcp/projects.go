@@ -15,7 +15,7 @@ func AllProjects(ctx context.Context) (list []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	pcall := cloudresourcemanagerService.Projects.List()
+	pcall := cloudresourcemanagerService.Projects.List() // TODO handle paging
 	presp, err := pcall.Do()
 	if err != nil {
 		log.Println("ABORT: error getting all projects", err)
