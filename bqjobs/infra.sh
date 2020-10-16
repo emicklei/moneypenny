@@ -18,4 +18,4 @@ bq \
     --label env:prd \
     --label opex:guild-venom \
     --label service:moneypenny \
-    $PROJECT:moneypenny_dataset.moneypenny_bigquery_job_history job_id:STRING,project:STRING,email:STRING,creation_time:TIMESTAMP,insertion_time:TIMESTAMP,total_bytes_processed:NUMERIC,location:STRING,query:STRING
+    $PROJECT:moneypenny_dataset.moneypenny_bigquery_job_history job_id:STRING,project:STRING,email:STRING,creation_time:TIMESTAMP,insertion_time:TIMESTAMP,total_bytes_processed:NUMERIC,location:STRING,query:STRING,query_hash:STRING

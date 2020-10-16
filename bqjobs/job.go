@@ -12,4 +12,5 @@ type BigQueryJob struct {
 	InsertionTime       time.Time `bigquery:"insertion_time"`
 	TotalBytesProcessed int64     `bigquery:"total_bytes_processed"`
 	Query               string    `bigquery:"query"`
+	QueryHash           string    `bigquery:"query_hash"`
 }

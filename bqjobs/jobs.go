@@ -2,6 +2,8 @@ package bqjobs
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"time"
@@ -38,6 +40,10 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 		}
 		jobCount++
 		if job.LastStatus().Statistics.TotalBytesProcessed > bytesProcessedThreshold {
+			query := queryForJob(job)
+			hasher := md5.New()
+			hasher.Write([]byte(query))
+			hash := hex.EncodeToString(hasher.Sum(nil))
 			bj := BigQueryJob{
 				JobID:               job.ID(),
 				Project:             project,
@@ -46,7 +52,8 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 				TotalBytesProcessed: job.LastStatus().Statistics.TotalBytesProcessed,
 				CreationTime:        job.LastStatus().Statistics.CreationTime,
 				InsertionTime:       time.Now(),
-				Query:               queryForJob(job),
+				Query:               query,
+				QueryHash:           hash,
 			}
 			jobsToInsert = append(jobsToInsert, bj)
 			insertCount++

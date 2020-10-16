@@ -23,8 +23,8 @@ func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplat
 	util.CheckNonEmpty("subject email", subject)
 	util.CheckNonEmpty("api-key", apikey)
 
-	from := mail.NewEmail("Moneypenny notifier", fromAddress)
-	to := mail.NewEmail("Moneypenny follower", toAddress)
+	from := mail.NewEmail("Moneypenny", fromAddress)
+	to := mail.NewEmail("Moneypenny User", toAddress)
 
 	dataJSON, err := ioutil.ReadFile(jsonFilename)
 	if err != nil {
@@ -61,7 +61,7 @@ func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplat
 	if resp.StatusCode > http.StatusAccepted {
 		return tre.New(errors.New("failed to send email"), "sendgrid failed to deliver", "status", resp.StatusCode, "body", resp.Body)
 	}
-	if err != nil {
+	if err == nil {
 		log.Println("send-email done")
 	}
 	return err
