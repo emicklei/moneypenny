@@ -188,9 +188,8 @@ func logBegin(c *cli.Context) func() {
 	log.Println(buf.String())
 	return func() {
 		if err := recover(); err != nil {
-			log.Println(c.Command.Name, "failed because:", err)
-		} else {
-			log.Println(c.Command.Name, "done")
+			// no way to communicate error to cli so exit here.
+			log.Fatalln(c.Command.Name, "failed because:", err)
 		}
 	}
 }
