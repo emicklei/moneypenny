@@ -54,6 +54,7 @@ func queryAndAppend(ctx context.Context, client *bigquery.Client, project string
 				InsertionTime:       time.Now(),
 				Query:               query,
 				QueryHash:           hash,
+				SlotMillis:          slotMillis(job),
 			}
 			jobsToInsert = append(jobsToInsert, bj)
 			insertCount++
@@ -107,4 +108,11 @@ func queryForJob(j *bigquery.Job) string {
 	default:
 		return fmt.Sprintf("// not available, unknown type:%T", c)
 	}
+}
+
+func slotMillis(j *bigquery.Job) int64 {
+	if qstats, ok := (j.LastStatus().Statistics.Details).(*bigquery.QueryStatistics); ok {
+		return qstats.SlotMillis
+	}
+	return 0
 }
