@@ -17,7 +17,6 @@ import (
 
 // SendEmail sends HTML content to an email address unless the data (jsonFilename) is missing.
 func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplateFilename, apikey string) error {
-	log.Println("send-email")
 	util.CheckNonEmpty("from email", fromAddress)
 	util.CheckNonEmpty("to email", toAddress)
 	util.CheckNonEmpty("subject email", subject)
@@ -54,15 +53,11 @@ func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplat
 		return tre.New(err, "executing template", "file", "htmlTemplateFilename")
 	}
 	htmlContent := buf.String()
-	log.Println("sending email using template:", htmlTemplateFilename, " and data:", jsonFilename, "from:", fromAddress, "to:", toAddress)
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient(apikey)
 	resp, err := client.Send(message)
 	if resp.StatusCode > http.StatusAccepted {
 		return tre.New(errors.New("failed to send email"), "sendgrid failed to deliver", "status", resp.StatusCode, "body", resp.Body)
-	}
-	if err == nil {
-		log.Println("send-email done")
 	}
 	return err
 }

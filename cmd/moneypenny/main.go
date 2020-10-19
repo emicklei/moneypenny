@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"time"
 
 	"github.com/emicklei/moneypenny/alert"
@@ -78,7 +81,8 @@ func newApp() *cli.App {
 			Usage: "detect-project-cost-anomalies",
 			Action: func(c *cli.Context) error {
 				p := model.ParamsFromContext(c)
-				return project.DetectProjectCostAnomalies(c, p)
+				defer logBegin(c)()
+				return logEnd(c, project.DetectProjectCostAnomalies(c, p))
 			},
 		},
 		{
@@ -86,7 +90,8 @@ func newApp() *cli.App {
 			Usage: "cost-per-opex",
 			Action: func(c *cli.Context) error {
 				p := model.ParamsFromContext(c)
-				return opex.ReportCostPerOpex(c, p)
+				defer logBegin(c)()
+				return logEnd(c, opex.ReportCostPerOpex(c, p))
 			},
 		},
 		{
@@ -104,7 +109,8 @@ func newApp() *cli.App {
 			},
 			Action: func(c *cli.Context) error {
 				p := model.ParamsFromContext(c)
-				return bqjobs.CollectJobHistory(c, p)
+				defer logBegin(c)()
+				return logEnd(c, bqjobs.CollectJobHistory(c, p))
 			},
 		},
 		{
@@ -118,7 +124,8 @@ func newApp() *cli.App {
 			},
 			Action: func(c *cli.Context) error {
 				p := model.ParamsFromContext(c)
-				return opex.MeasureCostPerOpexLastDay(c, p)
+				defer logBegin(c)()
+				return logEnd(c, opex.MeasureCostPerOpexLastDay(c, p))
 			},
 		},
 		{
@@ -126,8 +133,9 @@ func newApp() *cli.App {
 			Usage: "Send a HTML email by processing a Go template with a JSON document",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:  "api-key",
-					Usage: "sendgrid.com API Key",
+					Name:   "api-key",
+					Usage:  "sendgrid.com API Key",
+					Hidden: true,
 				},
 				&cli.StringFlag{
 					Name:  "from",
@@ -151,15 +159,47 @@ func newApp() *cli.App {
 				},
 			},
 			Action: func(c *cli.Context) error {
-
-				return alert.SendEmail(c.String("subject"),
+				defer logBegin(c)()
+				return logEnd(c, alert.SendEmail(c.String("subject"),
 					c.String("from"),
 					c.String("to"),
 					c.String("json-file"),
 					c.String("html-template-file"),
-					c.String("api-key"))
+					c.String("api-key")))
 			},
 		},
 	}
 	return app
+}
+
+func logBegin(c *cli.Context) func() {
+	buf := new(bytes.Buffer)
+	fmt.Fprint(buf, c.Command.Name)
+	for _, each := range c.Command.Flags {
+		fv := reflect.ValueOf(each)
+		hide := reflect.Indirect(fv).FieldByName("Hidden").Bool()
+		name := each.Names()[0]
+		value := c.Generic(name)
+		if hide {
+			value = "**hidden**"
+		}
+		fmt.Fprintf(buf, " %s=%v", name, value)
+	}
+	log.Println(buf.String())
+	return func() {
+		if err := recover(); err != nil {
+			log.Println(c.Command.Name, "failed because:", err)
+		} else {
+			log.Println(c.Command.Name, "done")
+		}
+	}
+}
+
+func logEnd(c *cli.Context, err error) error {
+	if err != nil {
+		log.Println(c.Command.Name, "failed because:", err)
+	} else {
+		log.Println(c.Command.Name, "done")
+	}
+	return err
 }

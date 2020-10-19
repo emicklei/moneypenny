@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -8,25 +9,25 @@ import (
 
 func CheckOpex(opex string) {
 	if len(opex) == 0 {
-		log.Fatalln("-opex cannot be empty")
+		panic(fmt.Sprintf("-opex cannot be empty"))
 	}
 }
 
 func CheckMonth(index int) {
 	if index < 1 || index > 12 {
-		log.Fatalln("-month must be in [1..12], got:", index)
+		panic(fmt.Sprintf("-month must be in [1..12], got:%d", index))
 	}
 }
 
 func CheckBigQueryTable(id string) {
 	if p := strings.Split(id, "."); len(p) != 3 {
-		log.Fatalln("full qualified bigquery table must be PROJECT.DATASET.TABLE, got:", id)
+		panic(fmt.Sprintf("full qualified bigquery table must be PROJECT.DATASET.TABLE, got:%s", id))
 	}
 }
 
 func CheckNonEmpty(parameter, value string) {
 	if len(value) == 0 {
-		log.Fatalf("parameter [%s] cannot be empty", parameter)
+		panic(fmt.Sprintf("parameter [%s] cannot be empty", parameter))
 	}
 }
 
