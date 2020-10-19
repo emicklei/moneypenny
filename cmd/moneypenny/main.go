@@ -174,6 +174,7 @@ func newApp() *cli.App {
 
 func logBegin(c *cli.Context) func() {
 	buf := new(bytes.Buffer)
+	fmt.Fprint(buf, "[moneypenny] ")
 	fmt.Fprint(buf, c.Command.Name)
 	for _, each := range c.Command.Flags {
 		fv := reflect.ValueOf(each)
@@ -196,9 +197,9 @@ func logBegin(c *cli.Context) func() {
 
 func logEnd(c *cli.Context, err error) error {
 	if err != nil {
-		log.Println(c.Command.Name, "failed because:", err)
+		log.Printf("[moneypenny] %s failed:%v\n", c.Command.Name, err)
 	} else {
-		log.Println(c.Command.Name, "done")
+		log.Printf("[moneypenny] %s done\n", c.Command.Name)
 	}
 	return err
 }
