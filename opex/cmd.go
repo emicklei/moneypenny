@@ -1,10 +1,9 @@
 package opex
 
 import (
-	"errors"
-
 	"github.com/emicklei/moneypenny/gcp"
 	"github.com/emicklei/moneypenny/model"
+	"github.com/emicklei/moneypenny/util"
 	"github.com/emicklei/tre"
 	"github.com/urfave/cli/v2"
 )
@@ -19,9 +18,7 @@ func ReportCostPerOpex(c *cli.Context, p model.Params) error {
 
 func MeasureCostPerOpexLastDay(c *cli.Context, p model.Params) error {
 	metricsProjectID := c.String("metrics-project")
-	if len(metricsProjectID) == 0 {
-		return errors.New("metrics-project cannot be empty")
-	}
+	util.CheckNonEmpty("metrics-project", metricsProjectID)
 
 	cc, err := computeCostPerOpexLastDay(p)
 	if err != nil {

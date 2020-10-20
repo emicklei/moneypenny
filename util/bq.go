@@ -2,6 +2,13 @@ package util
 
 import "cloud.google.com/go/bigquery"
 
+func String(sornil interface{}) string {
+	if s, ok := sornil.(string); ok {
+		return s
+	}
+	return ""
+}
+
 func BQNullString(sornil bigquery.Value) bigquery.NullString {
 	if s, ok := sornil.(string); ok {
 		return bigquery.NullString{StringVal: s, Valid: true}
