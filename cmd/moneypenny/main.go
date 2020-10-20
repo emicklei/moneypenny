@@ -95,6 +95,15 @@ func newApp() *cli.App {
 			},
 		},
 		{
+			Name:  "report-cost-per-component",
+			Usage: "report-cost-per-component",
+			Action: func(c *cli.Context) error {
+				p := model.ParamsFromContext(c)
+				defer logBegin(c)()
+				return logEnd(c, opex.ReportCostPerComponent(c, p))
+			},
+		},
+		{
 			Name:  "update-bigquery-jobs",
 			Usage: "update-bigquery-jobs",
 			Flags: []cli.Flag{

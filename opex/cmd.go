@@ -16,6 +16,14 @@ func ReportCostPerOpex(c *cli.Context, p model.Params) error {
 	return writeDetailReport(p, cc)
 }
 
+func ReportCostPerComponent(c *cli.Context, p model.Params) error {
+	cc, err := computeCostPerComponent(p)
+	if err != nil {
+		return tre.New(err, "computeCostPerComponent")
+	}
+	return writeDetailReport(p, cc)
+}
+
 func MeasureCostPerOpexLastDay(c *cli.Context, p model.Params) error {
 	metricsProjectID := c.String("metrics-project")
 	util.CheckNonEmpty("metrics-project", metricsProjectID)

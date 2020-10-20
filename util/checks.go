@@ -34,7 +34,7 @@ func CheckNonEmpty(parameter, value string) {
 var checkedGCP = false
 
 func CheckGCPCredentials() {
-	if checkedGCP {
+	if checkedGCP || os.Getenv("DEV") == "true" {
 		return
 	}
 	fileRef := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")

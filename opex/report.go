@@ -15,6 +15,9 @@ func writeDetailReport(input model.Params, cc model.CostComputation) error {
 	byTeam := map[string][]model.LabeledCost{}
 	for _, each := range cc.Lines {
 		eachCost := model.LabeledCostFrom(each)
+		if eachCost.Charges < 0.01 {
+			continue
+		}
 		list, ok := byTeam[eachCost.Opex.StringVal]
 		if ok {
 			byTeam[eachCost.Opex.StringVal] = append(list, eachCost)
