@@ -86,8 +86,8 @@ func newApp() *cli.App {
 			},
 		},
 		{
-			Name:  "cost-per-opex",
-			Usage: "cost-per-opex",
+			Name:  "report-cost-per-opex",
+			Usage: "report-cost-per-opex",
 			Action: func(c *cli.Context) error {
 				p := model.ParamsFromContext(c)
 				defer logBegin(c)()
@@ -174,7 +174,7 @@ func newApp() *cli.App {
 
 func logBegin(c *cli.Context) func() {
 	buf := new(bytes.Buffer)
-	fmt.Fprint(buf, "[moneypenny] ")
+	fmt.Fprint(buf, "[moneypenny]")
 
 	appendFlag := func(each cli.Flag) {
 		fv := reflect.ValueOf(each)
@@ -186,18 +186,19 @@ func logBegin(c *cli.Context) func() {
 		}
 		fmt.Fprintf(buf, " %s=%v", name, value)
 	}
+	fmt.Fprintf(buf, " %s (", c.Command.Name)
 	for _, each := range c.App.Flags {
 		appendFlag(each)
 	}
-	fmt.Fprintf(buf, " %s", c.Command.Name)
 	for _, each := range c.Command.Flags {
 		appendFlag(each)
 	}
+	fmt.Fprint(buf, " )")
 	log.Println(buf.String())
 	return func() {
 		if err := recover(); err != nil {
 			// no way to communicate error to cli so exit here.
-			log.Fatalln(c.Command.Name, "failed because:", err)
+			log.Fatalln(c.Command.Name, "FAILED with error:", err)
 		}
 	}
 }
