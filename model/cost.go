@@ -23,8 +23,8 @@ type LabeledCost struct {
 	Opex       bigquery.NullString `bigquery:"opex" json:"opex,omitempty"`
 }
 
-// MonitorLabel returns a Stackdriver friendly display label for the GCPService
-func (c LabeledCost) MonitorLabel() string {
+// GCPServiceMonitorLabel returns a Stackdriver friendly display label for the GCPService
+func (c LabeledCost) GCPServiceMonitorLabel() string {
 	return strings.ToLower(strings.ReplaceAll(c.GCPService.StringVal, " ", "-"))
 }
 

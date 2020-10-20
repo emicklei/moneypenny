@@ -175,8 +175,8 @@ func newApp() *cli.App {
 func logBegin(c *cli.Context) func() {
 	buf := new(bytes.Buffer)
 	fmt.Fprint(buf, "[moneypenny] ")
-	fmt.Fprint(buf, c.Command.Name)
-	for _, each := range c.Command.Flags {
+
+	appendFlag := func(each cli.Flag) {
 		fv := reflect.ValueOf(each)
 		hide := reflect.Indirect(fv).FieldByName("Hidden").Bool()
 		name := each.Names()[0]
@@ -185,6 +185,13 @@ func logBegin(c *cli.Context) func() {
 			value = "**hidden**"
 		}
 		fmt.Fprintf(buf, " %s=%v", name, value)
+	}
+	for _, each := range c.App.Flags {
+		appendFlag(each)
+	}
+	fmt.Fprintf(buf, " %s", c.Command.Name)
+	for _, each := range c.Command.Flags {
+		appendFlag(each)
 	}
 	log.Println(buf.String())
 	return func() {
