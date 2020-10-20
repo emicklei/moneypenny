@@ -54,7 +54,7 @@ func (s *StackDriver) SendMetrics(opex string, lines []model.LabeledCost, dryrun
 	timeSeries := []*monitoringpb.TimeSeries{}
 
 	for _, each := range lines {
-		log.Printf("%#v\n", each)
+		//log.Printf("%#v\n", each)
 		if each.Charges > 1.0 {
 			metric := &metricpb.Metric{
 				Type: metricType,
