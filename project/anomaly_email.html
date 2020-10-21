@@ -17,8 +17,8 @@
         <td>{{ .last_day.project_name }}</td>
         <td>{{ .last_day.charges }}</td>
         <td>{{ .last_day.credits }}</td>
-        <td>{{ .mean }} </td>
-        <td>{{ .stddev }} </td>        
+        <td>{{  printf "%.2f" .mean }} </td>
+        <td>{{  printf "%.2f" .stddev }} </td>     
         <td>{{ .last_day.consumption_day }}</td>
         <td>{{ .detector }} </td>
         <td>{{ .last_day.project_id }}</td>
