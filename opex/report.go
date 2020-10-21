@@ -2,6 +2,7 @@ package opex
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -18,11 +19,19 @@ func writeDetailReport(input model.Params, cc model.CostComputation) error {
 		if eachCost.Charges < 0.01 {
 			continue
 		}
-		list, ok := byTeam[eachCost.Opex.StringVal]
+		// either the cost computation is per opex or the opex is a global parameter
+		opex := eachCost.Opex.StringVal
+		if len(opex) == 0 {
+			opex = input.Opex
+			if len(opex) == 0 {
+				return errors.New("opex is empty")
+			}
+		}
+		list, ok := byTeam[opex]
 		if ok {
-			byTeam[eachCost.Opex.StringVal] = append(list, eachCost)
+			byTeam[opex] = append(list, eachCost)
 		} else {
-			byTeam[eachCost.Opex.StringVal] = []model.LabeledCost{eachCost}
+			byTeam[opex] = []model.LabeledCost{eachCost}
 		}
 	}
 
