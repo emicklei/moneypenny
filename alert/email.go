@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"text/template"
 
 	"github.com/emicklei/moneypenny/util"
@@ -15,15 +16,12 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-// SendEmail sends HTML content to an email address unless the data (jsonFilename) is missing.
+// SendEmail sends HTML content to an email address(es) unless the data (jsonFilename) is missing.
 func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplateFilename, apikey string) error {
 	util.CheckNonEmpty("from email", fromAddress)
-	util.CheckNonEmpty("to email", toAddress)
+	util.CheckNonEmpty("to email(s)", toAddress)
 	util.CheckNonEmpty("subject email", subject)
 	util.CheckNonEmpty("api-key", apikey)
-
-	from := mail.NewEmail("Moneypenny", fromAddress)
-	to := mail.NewEmail("Moneypenny User", toAddress)
 
 	dataJSON, err := ioutil.ReadFile(jsonFilename)
 	if err != nil {
@@ -53,9 +51,23 @@ func SendEmail(subject, fromAddress, toAddress string, jsonFilename, htmlTemplat
 		return tre.New(err, "executing template", "file", "htmlTemplateFilename")
 	}
 	htmlContent := buf.String()
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+
+	// compose email
+	m := mail.NewV3Mail()
+	m.SetFrom(mail.NewEmail("Moneypenny", fromAddress))
+	m.AddContent(mail.NewContent("text/plain", plainTextContent))
+	m.AddContent(mail.NewContent("text/html", htmlContent))
+	personalization := mail.NewPersonalization()
+	for _, each := range strings.Split(toAddress, ",") {
+		eachAddress := strings.TrimSpace(each)
+		personalization.AddTos(mail.NewEmail("Moneypenny User", eachAddress))
+	}
+	personalization.Subject = subject
+	m.AddPersonalizations(personalization)
+
+	// send it away
 	client := sendgrid.NewSendClient(apikey)
-	resp, err := client.Send(message)
+	resp, err := client.Send(m)
 	if resp.StatusCode > http.StatusAccepted {
 		return tre.New(errors.New("failed to send email"), "sendgrid failed to deliver", "status", resp.StatusCode, "body", resp.Body)
 	}

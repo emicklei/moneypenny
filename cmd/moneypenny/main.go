@@ -152,7 +152,7 @@ func newApp() *cli.App {
 				},
 				&cli.StringFlag{
 					Name:  "to",
-					Usage: "to email address",
+					Usage: "to email address(es), comma separated",
 				},
 				&cli.StringFlag{
 					Name:  "subject",
