@@ -64,6 +64,10 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 				Mean:              each.Mean,
 				StandardDeviation: each.StandardDeviation,
 			}
+			if each.Mean > 0 {
+				// bounds are checked
+				report.ChargesPercentage = (each.Daily[0].Charges - each.Mean) * 100.0 / each.Mean
+			}
 			anomalies = append(anomalies, report)
 			log.Println("id:", id, "cost:", each.Daily[0].Charges, "avg:", each.Mean, "stddev:", each.StandardDeviation, "day:", each.Daily[0].Day.String())
 		}

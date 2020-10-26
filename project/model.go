@@ -32,6 +32,7 @@ type ProjectStats struct {
 
 type ProjectStatsReport struct {
 	LastDay           DailyCost `json:"last_day" `
+	ChargesPercentage float64   `json:"charges_percentage" `
 	Mean              float64   `json:"mean" `
 	StandardDeviation float64   `json:"stddev" `
 	Detector          string    `json:"detector" `

@@ -20,6 +20,7 @@ func TestReportJSON(t *testing.T) {
 		"charges": 12.34,
 		"credits": 0.01
 	},
+	"charges_percentage": 0,
 	"mean": 8.32,
 	"stddev": 1.323,
 	"detector": "sundaysky{relativeThreshold=1.25,stddevThreshold=2.00,absoluteThreshold=10.00}"
