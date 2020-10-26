@@ -1,29 +1,35 @@
 <!-- this is an example template that matches the data structure of the anomaly report -->
 <body>
-<table width="600" cellpadding="0" cellspacing="0" align="left" border="1">
-    <tr>
-        <th>project</th>                
-        <th>charges</th>
-        <th>credits</th>
-        <th>mean</th>
-        <th>stddev</th>        
-        <th>day</th>
-        <th>detector</th>
-        <th>project id</th>
-    </tr>
-
-    {{range .anomalies}}
-    <tr> 
-        <td>{{ .last_day.project_name }}</td>
-        <td>{{ .last_day.charges }}</td>
-        <td>{{ .last_day.credits }}</td>
-        <td>{{  printf "%.2f" .mean }} </td>
-        <td>{{  printf "%.2f" .stddev }} </td>     
-        <td>{{ .last_day.consumption_day }}</td>
-        <td>{{ .detector }} </td>
-        <td>{{ .last_day.project_id }}</td>
-    </tr>
-    {{ end }}
-    
-</table>
+    <div style="display:block;">
+        <ul>
+            <li>Number of projects linked to billing account (XXXX) is 61</li>
+            <li>Statistics are based on the past 30 days.</li>
+        </ul>        
+        <table cellpadding="4" cellspacing="4" align="left" border="1">
+            <tr>
+                <th>project (report)</th>                    
+                <th>charges $</th>
+                <th>charges %</th>
+                <th>mean $</th>
+                <th>credits $</th>                
+                <th>stddev $</th>       
+                <th>day</th>
+                <th>detector</th>
+            </tr>
+        
+            {{range .anomalies}}
+            <tr> 
+                <td><a href="https://console.cloud.google.com/billing/XXXX/reports;projects={{ .last_day.project_id }}?organizationId=344471582607">{{ .last_day.project_name }}</a></td>
+                <td>{{ .last_day.charges }}</td>
+                <td>{{  printf "%.1f" .charges_percentage }} </td>        
+                <td>{{  printf "%.2f" .mean }} </td>
+                <td>{{ .last_day.credits }}</td>                
+                <td>{{  printf "%.2f" .stddev }} </td>        
+                <td>{{ .last_day.consumption_day }}</td>
+                <td>{{ .detector }} </td>
+            </tr>
+            {{ end }}
+            
+        </table>
+    </div>
 </body>
