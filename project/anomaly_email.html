@@ -2,8 +2,8 @@
 <body>
     <div style="display:block;">
         <ul>
-            <li>Number of projects linked to billing account (XXXX) is 61</li>
-            <li>Statistics are based on the past 30 days.</li>
+            <li>Number of projects linked to billing account (XXXX) is {{ .project_count }}</li>
+            <li>Statistics are based on the past {{ .statistics_days }} days.</li>
         </ul>        
         <table cellpadding="4" cellspacing="4" align="left" border="1">
             <tr>
@@ -19,7 +19,7 @@
         
             {{range .anomalies}}
             <tr> 
-                <td><a href="https://console.cloud.google.com/billing/XXXX/reports;projects={{ .last_day.project_id }}?organizationId=344471582607">{{ .last_day.project_name }}</a></td>
+                <td><a href="https://console.cloud.google.com/billing/XXXX/reports;grouping=GROUP_BY_SERVICE;projects={{ .last_day.project_id }}?organizationId=YYYYYYY">{{ .last_day.project_name }}</a></td>
                 <td>{{ .last_day.charges }}</td>
                 <td>{{  printf "%.1f" .charges_percentage }} </td>        
                 <td>{{  printf "%.2f" .mean }} </td>

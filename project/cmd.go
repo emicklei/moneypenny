@@ -15,11 +15,19 @@ import (
 // DetectProjectCostAnomalies collects 30 days of costs per project to detect a cost
 // Write a report to [DetectProjectCostAnomalies.json] if at lease one anomaly was found.
 func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
+	targetTable := p.TargetTableFQN
+	// optionally, anomaly events are written to a table
+	if len(targetTable) > 0 {
+		util.CheckBigQueryTable(targetTable)
+	}
+	util.CheckBigQueryTable(p.BillingTableFQN)
+
+	detector := BestSundaySky
 	// date is a YYYYMMDD with zero time
 	// dayTo must be yesterday
 	dayTo := p.Date().Add(-1 * time.Second)
 	// 30 days back
-	dayFrom := dayTo.Add(-30 * time.Hour * 24) // TODO make flag for 30
+	dayFrom := dayTo.Add(-time.Duration(detector.windowDays) * time.Hour * 24)
 
 	q := QueryPastDays(p.BillingTableFQN, dayFrom, dayTo)
 
@@ -54,7 +62,7 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 	}
 
 	log.Println("detecting cost anomalies on", dayTo, "...")
-	detector := BestSundaySky
+
 	anomalies := []ProjectStatsReport{}
 	for id, each := range statsMap {
 		if detector.IsAnomaly(each) {
@@ -74,9 +82,18 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 	}
 	// only export report if at least one anomaly found"
 	if len(anomalies) > 0 {
-		root := map[string][]ProjectStatsReport{}
+		root := map[string]interface{}{}
 		root["anomalies"] = anomalies
-		util.ExportJSON(root, "DetectProjectCostAnomalies.json")
+		root["project_count"] = len(statsMap)
+		root["statistics_days"] = detector.windowDays
+		if err := util.ExportJSON(root, "DetectProjectCostAnomalies.json"); err != nil {
+			return err
+		}
+
+		// see if we need to store the non-empty list of events
+		if len(targetTable) > 0 {
+			return appendEventsForAnomalies(anomalies, detector, p)
+		}
 	}
 	return nil
 }

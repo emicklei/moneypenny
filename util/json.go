@@ -16,5 +16,5 @@ func ExportJSON(data interface{}, filename string) error {
 	if err := enc.Encode(data); err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filename, buf.Bytes(), os.ModeAppend)
+	return ioutil.WriteFile(filename, buf.Bytes(), os.ModePerm)
 }

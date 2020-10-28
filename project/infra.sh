@@ -14,8 +14,9 @@ bq \
     --project_id=$PROJECT \
     --location=eu \
     mk --table \
-    --time_partitioning_field creation_time \
+    --time_partitioning_field event_creation_time \
     --label env:prd \
     --label opex:team-gcp-cost \
     --label service:moneypenny \
-    $PROJECT:moneypenny_dataset.moneypenny_bigquery_job_history job_id:STRING,project:STRING,email:STRING,creation_time:TIMESTAMP,insertion_time:TIMESTAMP,total_bytes_processed:NUMERIC,location:STRING,query:STRING,query_hash:STRING
+    $PROJECT:moneypenny_dataset.moneypenny_cost_anomaly_events event_id:STRING,event_creation_time:TIMESTAMP,project_id:STRING,project_name:STRING,charges:FLOAT64,charges_percentage:FLOAT64,credits:FLOAT64,mean:FLOAT64,stddev:FLOAT64,detection_day:TIMESTAMP,detector:STRING
+                

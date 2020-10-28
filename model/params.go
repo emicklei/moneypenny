@@ -44,7 +44,8 @@ func ParamsFromContext(c *cli.Context) Params {
 		BillingTableFQN:      c.String("billing-table"),
 		QueryExecutionRegion: c.String("query-execution-region"),
 		// others
-		Opex: c.String("opex"),
+		TargetTableFQN: c.String("target-table"),
+		Opex:           c.String("opex"),
 	}
 	if date := c.String("date"); len(date) > 0 {
 		d, err := time.Parse(TimestampDayLayout, date)

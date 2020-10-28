@@ -37,3 +37,17 @@ type ProjectStatsReport struct {
 	StandardDeviation float64   `json:"stddev" `
 	Detector          string    `json:"detector" `
 }
+
+type AnomalyEvent struct {
+	EventID           string    `bigquery:"event_id" `
+	EventCreationTime time.Time `bigquery:"event_creation_time" `
+	ProjectID         string    `bigquery:"project_id" `
+	ProjectName       string    `bigquery:"project_name" `
+	Charges           string    `bigquery:"charges" `
+	ChargesPercentage string    `bigquery:"charges_percentage" `
+	Credits           string    `bigquery:"credits" `
+	Mean              string    `bigquery:"mean" `
+	StandardDeviation string    `bigquery:"stddev" `
+	DetectionDay      time.Time `bigquery:"detection_day" `
+	Detector          string    `bigquery:"detector" `
+}
