@@ -10,6 +10,7 @@ For each project linked to a billing account, the last day cost is compared to t
 moneypenny \
     -billing-table PROJECT.DATASET.gcp_billing_export_v1_00000000 \
     detect-project-cost-anomalies
+    -sundaysky.stddev=3.0
 ```
 
 This command will produce a `DetectProjectCostAnomalies.json` file that looks like:
@@ -30,4 +31,18 @@ This command will produce a `DetectProjectCostAnomalies.json` file that looks li
         }]}
 ```
 
-&copy; 2020, MIT Licensed. http://ernestmicklei.com
+### Optional flags
+
+Add this option to override the threshold (2.0) of the sundaysky detection method.
+
+```bash
+    -sundaysky.stddev=3.0
+```
+
+Add this option to store all anomaly events in a BigQuery table. See `infra.sh` how to create it.
+
+```bash
+    -target-table PROJECT.moneypenny_dataset.moneypenny_cost_anomaly_events
+```
+
+&copy; 2020, MIT Licensed. [ernestmicklei.com](http://ernestmicklei.com)

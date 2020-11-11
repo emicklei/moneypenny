@@ -23,6 +23,9 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 	util.CheckBigQueryTable(p.BillingTableFQN)
 
 	detector := BestSundaySky
+	if stddev := c.Float64("sundaysky.stddev"); stddev > 0 {
+		detector.stddevThreshold = stddev
+	}
 	// date is a YYYYMMDD with zero time
 	// dayTo must be yesterday
 	dayTo := p.Date().Add(-1 * time.Second)

@@ -80,6 +80,10 @@ func newApp() *cli.App {
 			Name:  "detect-project-cost-anomalies",
 			Usage: "detect-project-cost-anomalies",
 			Flags: []cli.Flag{
+				&cli.Float64Flag{
+					Name:  "sundaysky.stddev",
+					Usage: "[optional] standard deviation threshold change. default = 2.0",
+				},
 				&cli.StringFlag{
 					Name:  "target-table",
 					Usage: "[optional] FQN of the dataset table to write events for each detection",
