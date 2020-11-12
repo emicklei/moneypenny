@@ -10,7 +10,6 @@ For each project linked to a billing account, the last day cost is compared to t
 moneypenny \
     -billing-table PROJECT.DATASET.gcp_billing_export_v1_00000000 \
     detect-project-cost-anomalies
-    -sundaysky.stddev=3.0
 ```
 
 This command will produce a `DetectProjectCostAnomalies.json` file that looks like:
@@ -31,7 +30,7 @@ This command will produce a `DetectProjectCostAnomalies.json` file that looks li
         }]}
 ```
 
-### Optional flags
+### Optional flags for detect-project-cost-anomalies
 
 Add this option to override the threshold (2.0) of the sundaysky detection method.
 
