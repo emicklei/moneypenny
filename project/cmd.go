@@ -89,7 +89,7 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 		return anomalies[i].LastDay.Charges > anomalies[j].LastDay.Charges
 	})
 	// sort anomalies by charges %
-	anomalieByPercentage := []ProjectStatsReport{}
+	anomalieByPercentage := make([]ProjectStatsReport, len(anomalies))
 	copy(anomalieByPercentage, anomalies)
 	sort.Slice(anomalieByPercentage, func(i, j int) bool {
 		return anomalieByPercentage[i].ChargesPercentage > anomalieByPercentage[j].ChargesPercentage
