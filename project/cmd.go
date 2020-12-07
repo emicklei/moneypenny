@@ -3,6 +3,7 @@ package project
 import (
 	"context"
 	"log"
+	"sort"
 	"time"
 
 	"github.com/emicklei/moneypenny/gcp"
@@ -83,10 +84,21 @@ func DetectProjectCostAnomalies(c *cli.Context, p model.Params) error {
 			log.Println("id:", id, "cost:", each.Daily[0].Charges, "avg:", each.Mean, "stddev:", each.StandardDeviation, "day:", each.Daily[0].Day.String())
 		}
 	}
+	// sort anomalies by charges $
+	sort.Slice(anomalies, func(i, j int) bool {
+		return anomalies[i].LastDay.Charges > anomalies[j].LastDay.Charges
+	})
+	// sort anomalies by charges %
+	anomalieByPercentage := anomalies[:]
+	sort.Slice(anomalieByPercentage, func(i, j int) bool {
+		return anomalieByPercentage[i].ChargesPercentage > anomalieByPercentage[j].ChargesPercentage
+	})
+
 	// only export report if at least one anomaly found"
 	if len(anomalies) > 0 {
 		root := map[string]interface{}{}
 		root["anomalies"] = anomalies
+		root["anomalies_sortedby_percentage"] = anomalieByPercentage
 		root["project_count"] = len(statsMap)
 		root["statistics_days"] = detector.windowDays
 		if err := util.ExportJSON(root, "DetectProjectCostAnomalies.json"); err != nil {

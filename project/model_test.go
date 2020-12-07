@@ -23,7 +23,7 @@ func TestReportJSON(t *testing.T) {
 	"charges_percentage": 0,
 	"mean": 8.32,
 	"stddev": 1.323,
-	"detector": "sundaysky{relativeThreshold=1.25,stddevThreshold=2.00,absoluteThreshold=10.00}"
+	"detector": "sundaysky{relativeThreshold=1.25,stddevThreshold=2.00,absoluteThreshold=10.00,windowDays=30}"
 }`; got != want {
 		t.Errorf("got [%v:%T] want [%v:%T]", got, got, want, want)
 	}
